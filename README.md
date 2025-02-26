@@ -26,7 +26,7 @@ You can customize the appearance and behavior of the visualization by editing th
 
 ## Example
 
-![Lissajous Curves Example](example.png)
+<img src="doc/example.png" alt="Lissajous Curves Example" width="400">
 
 ## License
 
