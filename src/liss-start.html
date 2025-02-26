@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lissajous Curves</title>
+    <style>
+        body { margin: 0; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
+        canvas { display: block; }
+        .controls { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 10px; }
+        .slider-group { display: flex; gap: 10px; }
+        .info-panel { margin-top: 10px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <canvas id="lissajousCanvas"></canvas>
+    <div class="controls">
+        <label>Auto Change <input type="checkbox" id="autoChange" checked></label>
+        <div class="slider-group">
+            <label>A: <input type="range" id="A" min="0.5" max="2" step="0.1" value="1"></label>
+            <label>B: <input type="range" id="B" min="0.5" max="2" step="0.1" value="1"></label>
+        </div>
+        <div class="slider-group">
+            <label>a: <input type="range" id="a" min="1" max="10" step="0.1" value="3"></label>
+            <label>b: <input type="range" id="b" min="1" max="10" step="0.1" value="2"></label>
+        </div>
+        <label>Scale: <input type="range" id="scale" min="50" max="300" step="10" value="150"></label>
+    </div>
+    <div class="info-panel" id="infoPanel">
+        Frequencies: a = 3, b = 2<br>
+        Amplitudes: A = 1, B = 1<br>
+        Frequency Ratio: 1.5
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const canvas = document.getElementById("lissajousCanvas");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight * 0.8;
+            const ctx = canvas.getContext("2d");
+
+            let A = 1, B = 1, a = 3, b = 2, delta = 0, scale = 150;
+            let t = 0;
+            let autoChange = true;
+
+            document.getElementById("autoChange").addEventListener("change", function () {
+                autoChange = this.checked;
+            });
+
+            function updateParameters() {
+                A = parseFloat(document.getElementById("A").value);
+                B = parseFloat(document.getElementById("B").value);
+                a = parseFloat(document.getElementById("a").value);
+                b = parseFloat(document.getElementById("b").value);
+                scale = parseFloat(document.getElementById("scale").value);
+                updateInfoPanel();
+            }
+
+            function updateInfoPanel() {
+                document.getElementById("infoPanel").innerHTML = `
+                    Frequencies: a = ${a.toFixed(2)}, b = ${b.toFixed(2)}<br>
+                    Amplitudes: A = ${A.toFixed(2)}, B = ${B.toFixed(2)}<br>
+                    Frequency Ratio: ${(a / b).toFixed(2)}
+                `;
+            }
+
+            document.querySelectorAll("input[type=range]").forEach(input => {
+                input.addEventListener("input", updateParameters);
+            });
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+                ctx.strokeStyle = "#FF4500";
+                ctx.lineWidth = 2;
+
+                for (let i = 0; i <= 2 * Math.PI; i += 0.01) {
+                    let x = A * Math.sin(a * i + delta);
+                    let y = B * Math.sin(b * i);
+                    ctx.lineTo(canvas.width / 2 + x * scale, canvas.height / 2 + y * scale);
+                }
+                
+                ctx.stroke();
+                delta += 0.02; // Animate phase shift
+                if (autoChange) {
+                    a = 3 + Math.sin(t * 0.01) * 2; // Slowly change frequency a
+                    b = 2 + Math.cos(t * 0.01) * 2; // Slowly change frequency b
+                    A = 1 + Math.sin(t * 0.005) * 0.5; // Slowly change amplitude A
+                    B = 1 + Math.cos(t * 0.005) * 0.5; // Slowly change amplitude B
+                }
+                t += 1;
+                updateInfoPanel();
+                
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        });
+    </script>
+</body>
+</html>
