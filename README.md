@@ -2,6 +2,10 @@
 
 This project visualizes Lissajous curves using HTML, CSS, and JavaScript. The curves are drawn on a canvas element and can be customized using various controls.
 
+## Pages
+
+The result can be viewed on GitHub Pages: [Lissajous Curves](https://sherem.github.io/lissajous-new/)
+
 ## Files
 
 - [`src/liss-start.html`](src/liss-start.html): The initial version of the Lissajous curves visualization.
